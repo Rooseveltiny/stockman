@@ -24,7 +24,9 @@ func (sem *SystemEventsManager) AppendEvent(event *AnyEvent) {
 	sem.Events.AppendEvent(event)
 }
 
-func (sem *SystemEventsManager) RunEvent(event *AnyEvent) {}
+func (sem *SystemEventsManager) RunEvent(event *AnyEvent) {
+	event.Run()
+}
 
 func (sem *SystemEventsManager) AppendBackgroundEvent(event *AnyEvent) {
 	sem.BackgroundEvents.AppendEvent(event)

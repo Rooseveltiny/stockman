@@ -3,7 +3,7 @@ package main
 import "context"
 
 type StockmanAPIFunc[T any, K any, B any] func(context.Context, T, K, B)
-type AnyEvent Event[any, any, any]
+type AnyEvent = Event[any, any, any]
 
 /*
 	Fully generic class. Can be decleared type of output data and input data.
@@ -18,7 +18,9 @@ type Event[T any, K any, B any] struct {
 	cancelFunc      context.CancelFunc
 }
 
-func (e *Event[T, K, B]) Run() {}
+func (e *Event[T, K, B]) Run() {
+
+}
 
 func (e *Event[T, K, B]) Done() <-chan struct{} {
 	return e.ctx.Done()
