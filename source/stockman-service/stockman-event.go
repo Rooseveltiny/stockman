@@ -2,7 +2,7 @@ package main
 
 import "context"
 
-type StockmanAPIFunc[T any, K any, B any] func(context.Context, chan<- T, <-chan K, B, context.CancelFunc)
+type StockmanAPIFunc[T any, K any, B any] func(context.Context, chan T, chan K, B, context.CancelFunc)
 type AnyEvent = Event[any, any, any]
 
 /*
@@ -11,8 +11,8 @@ type AnyEvent = Event[any, any, any]
 */
 type Event[T any, K any, B any] struct {
 	StockmanAPIFunc StockmanAPIFunc[T, K, B] // A service API func to use stockman service
-	Output          chan<- T                 // Output data channel to get actual data from process
-	Input           <-chan K                 // Input data channel to send actual data inside process
+	Output          chan T                   // Output data channel to get actual data from process
+	Input           chan K                   // Input data channel to send actual data inside process
 	Data            B                        // First data to send with event just
 	ctx             context.Context          // Context of funning event
 	cancelFunc      context.CancelFunc       // Cancel func of running event
@@ -31,5 +31,12 @@ func (e *Event[T, K, B]) StopEvent() {
 }
 
 func NewEvent[T any, K any, B any]() *Event[T, K, B] {
-	return &Event[T, K, B]{}
+
+	ctxBG := context.Background()
+	ctxWithCancel, cancelFunc := context.WithCancel(ctxBG)
+
+	output := make(chan T)
+	input := make(chan K)
+
+	return &Event[T, K, B]{ctx: ctxWithCancel, cancelFunc: cancelFunc, Output: output, Input: input}
 }
