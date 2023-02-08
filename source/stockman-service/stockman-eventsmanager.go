@@ -33,7 +33,7 @@ func (sem *SystemEventsManager) AppendBackgroundEvent(event *AnyEvent) {
 }
 
 func (sem *SystemEventsManager) RunBackgroundEvent(event *AnyEvent) {
-	sem.RunningBackgroundEvents.AppendEvent(event) // put event into running pool
+	sem.RunningBackgroundEvents.AppendEvent(event)
 }
 
 func NewSystemEventsManager() *SystemEventsManager {
