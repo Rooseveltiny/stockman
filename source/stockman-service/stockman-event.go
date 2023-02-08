@@ -30,7 +30,7 @@ func (e *Event[T, K, B]) StopEvent() {
 	e.cancelFunc()
 }
 
-func NewEvent[T any, K any, B any]() *Event[T, K, B] {
+func NewEvent[T any, K any, B any](data B) *Event[T, K, B] {
 
 	ctxBG := context.Background()
 	ctxWithCancel, cancelFunc := context.WithCancel(ctxBG)
@@ -38,5 +38,5 @@ func NewEvent[T any, K any, B any]() *Event[T, K, B] {
 	output := make(chan T)
 	input := make(chan K)
 
-	return &Event[T, K, B]{ctx: ctxWithCancel, cancelFunc: cancelFunc, Output: output, Input: input}
+	return &Event[T, K, B]{ctx: ctxWithCancel, cancelFunc: cancelFunc, Output: output, Input: input, Data: data}
 }
