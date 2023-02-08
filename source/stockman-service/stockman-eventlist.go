@@ -14,6 +14,10 @@ func (el *EventsList) RetrieveEvent() *AnyEvent {
 	return &retrievedEvent
 }
 
+func (el *EventsList) Size() int {
+	return len(el.Events)
+}
+
 func (el *EventsList) ClearEventsList() {
 	for len(el.Events) != 0 {
 		el.RetrieveEvent()
