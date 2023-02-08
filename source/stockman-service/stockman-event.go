@@ -38,5 +38,11 @@ func NewEvent[T any, K any, B any](data B) *Event[T, K, B] {
 	output := make(chan T)
 	input := make(chan K)
 
-	return &Event[T, K, B]{ctx: ctxWithCancel, cancelFunc: cancelFunc, Output: output, Input: input, Data: data}
+	return &Event[T, K, B]{
+		ctx:        ctxWithCancel,
+		cancelFunc: cancelFunc,
+		Output:     output,
+		Input:      input,
+		Data:       data,
+	}
 }

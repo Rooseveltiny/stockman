@@ -28,3 +28,15 @@ func TestEvent(t *testing.T) {
 		})
 	})
 }
+
+func TestEventList(t *testing.T) {
+	Convey("test eventlist init", t, func() {
+		eventList := NewEventsList()
+		So(eventList.Events, ShouldBeEmpty)
+		So(eventList.Size(), ShouldBeZeroValue)
+		Convey("test eventlist append event", func() {
+			event := NewEvent[string, string, string]("")
+			eventList.AppendEvent(event)
+		})
+	})
+}
