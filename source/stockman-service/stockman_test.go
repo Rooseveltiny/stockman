@@ -64,3 +64,13 @@ func TestEventsList(t *testing.T) {
 		})
 	})
 }
+
+func TestEventsPool(t *testing.T) {
+	Convey("test events pool", t, func() {
+		e := NewEvent(f)
+		ep := NewEventsPool()
+		ep.AppendEvent(e)
+		ev := ep.PopEvent()
+		So(e, ShouldEqual, ev)
+	})
+}
