@@ -1,48 +1,87 @@
 package main
 
-import "context"
+import (
+	"context"
+	"encoding/json"
 
-type StockmanAPIFunc[T any, K any, B any] func(context.Context, chan T, chan K, B, context.CancelFunc)
-type AnyEvent = Event[any, any, any]
+	"github.com/google/uuid"
+)
 
-/*
-	Fully generic class. Can be decleared type of output data and input data.
-	It helps always to know which kind of data that event is.
-*/
-type Event[T any, K any, B any] struct {
-	StockmanAPIFunc StockmanAPIFunc[T, K, B] // A service API func to use stockman service
-	Output          chan T                   // Output data channel to get actual data from process
-	Input           chan K                   // Input data channel to send actual data inside process
-	Data            B                        // First data to send with event just
-	ctx             context.Context          // Context of funning event
-	cancelFunc      context.CancelFunc       // Cancel func of running event
+type Event struct {
+	uuid      uuid.UUID
+	eventFunc func(context.Context, *Event)
+
+	ctx          context.Context
+	cancelFunc   context.CancelFunc
+	onPause      chan bool
+	inputStream  chan []byte
+	outputStream chan []byte
+	input        []byte
+	output       []byte
 }
 
-func (e *Event[T, K, B]) Run() {
-	e.StockmanAPIFunc(e.ctx, e.Output, e.Input, e.Data, e.cancelFunc)
+func (e *Event) Run() {
+	e.eventFunc(e.ctx, e)
 }
 
-func (e *Event[T, K, B]) Done() <-chan struct{} {
-	return e.ctx.Done()
+func (e *Event) Play() {
+	e.onPause <- false
 }
 
-func (e *Event[T, K, B]) StopEvent() {
+func (e *Event) Pause() {
+	e.onPause <- true
+}
+
+func (e *Event) FinishEvent() {
 	e.cancelFunc()
 }
 
-func NewEvent[T any, K any, B any](data B) *Event[T, K, B] {
+func (e *Event) EventDone() <-chan struct{} {
+	return e.ctx.Done()
+}
 
-	ctxBG := context.Background()
-	ctxWithCancel, cancelFunc := context.WithCancel(ctxBG)
+func (e *Event) LoadLastOutputValue(DTO *interface{}) {
+	json.Unmarshal(e.output, DTO)
+}
 
-	output := make(chan T)
-	input := make(chan K)
+func (e *Event) LoadLastInputValue(DTO *interface{}) {
+	json.Unmarshal(e.input, DTO)
+}
 
-	return &Event[T, K, B]{
-		ctx:        ctxWithCancel,
+func (e *Event) SetInputStreamValue(DTO interface{}) {
+	inputValue, _ := json.Marshal(DTO)
+	e.input = inputValue
+	e.inputStream <- inputValue
+}
+
+func (e *Event) SetOutputStreamValue(DTO interface{}) {
+	outputValue, _ := json.Marshal(DTO)
+	e.output = outputValue
+	e.outputStream <- outputValue
+}
+
+func NewEvent() *Event {
+	ctx := context.Background()
+	ctxCancel, cancelFunc := context.WithCancel(ctx)
+
+	emptyInputStream := make(chan []byte)
+	emptyOutputStream := make(chan []byte)
+	onPause := make(chan bool)
+	onPause <- false
+
+	uuid, _ := uuid.NewUUID()
+
+	e := &Event{
+		uuid: uuid,
+
+		ctx:        ctxCancel,
 		cancelFunc: cancelFunc,
-		Output:     output,
-		Input:      input,
-		Data:       data,
+
+		onPause: onPause,
+
+		inputStream:  emptyInputStream,
+		outputStream: emptyOutputStream,
 	}
+
+	return e
 }
