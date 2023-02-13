@@ -74,3 +74,11 @@ func TestEventsPool(t *testing.T) {
 		So(e, ShouldEqual, ev)
 	})
 }
+
+func TestEventsManager(t *testing.T) {
+	Convey("test events manager init", t, func() {
+		em := NewSystemEventsManager()
+		So(em.Events.Size(), ShouldBeZeroValue)
+		So(em.BackgroundEvents.Size(), ShouldBeZeroValue)
+	})
+}
