@@ -38,3 +38,10 @@ func TestEvent(t *testing.T) {
 		})
 	})
 }
+
+func TestEventsList(t *testing.T) {
+	Convey("test events list init", t, func() {
+		el := NewEventsList()
+		So(el.Size(), ShouldBeZeroValue)
+	})
+}
