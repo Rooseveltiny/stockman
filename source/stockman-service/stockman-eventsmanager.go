@@ -1,6 +1,8 @@
 package main
 
-import "context"
+import (
+	"context"
+)
 
 type SystemEventsManager struct {
 	Events           *EventsPool
@@ -10,15 +12,17 @@ type SystemEventsManager struct {
 }
 
 func (sem *SystemEventsManager) RunEventLoop() {
-	for {
-		select {
-		case <-sem.ctx.Done():
-			return
-		case <-sem.NewEventFlag: // Run sync events
-			sem.RunEvent()
+	go func() {
+		for {
+			select {
+			case <-sem.ctx.Done():
+				return
+			case <-sem.NewEventFlag: // Run sync events
+				sem.RunEvent()
+			}
+			// run bg events here
 		}
-		// run bg events here
-	}
+	}()
 }
 
 func (sem *SystemEventsManager) AppendEvent(event *Event) {
@@ -47,5 +51,12 @@ func (sem *SystemEventsManager) RunBackgroundEvent() {
 func NewSystemEventsManager() *SystemEventsManager {
 	evPool := NewEventsPool()
 	evBGPool := NewEventsPool()
-	return &SystemEventsManager{Events: evPool, BackgroundEvents: evBGPool}
+	newEFlag := make(chan bool)
+	ctx := context.Background()
+	return &SystemEventsManager{
+		Events:           evPool,
+		BackgroundEvents: evBGPool,
+		ctx:              ctx,
+		NewEventFlag:     newEFlag,
+	}
 }

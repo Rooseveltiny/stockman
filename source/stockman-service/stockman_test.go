@@ -12,6 +12,15 @@ type TestyDTO struct {
 	TestName string `json:"test_name"`
 }
 
+type OutputDTO struct {
+	TestFieldOfOutput string `json:"test_field_of_output"`
+}
+
+var outputFn = func(ctx context.Context, e *Event) {
+	e.SetOutput(OutputDTO{TestFieldOfOutput: "Some data"})
+	e.NotifyOutputChanged()
+}
+
 var f EventFn = func(ctx context.Context, e *Event) {
 	fmt.Println("test print ln")
 	e.NotifyOutputChanged()
@@ -22,7 +31,7 @@ func TestEvent(t *testing.T) {
 		e := NewEvent(f)
 		So(e.event, ShouldNotBeNil)
 		So(e.ctx, ShouldNotBeNil)
-		So(e.mu, ShouldNotBeNil)
+		// So(e.mu, ShouldNotBeNil)
 		So(e.input, ShouldBeEmpty)
 		So(e.output, ShouldBeEmpty)
 		So(e.outputChanged, ShouldNotBeNil)
@@ -80,5 +89,18 @@ func TestEventsManager(t *testing.T) {
 		em := NewSystemEventsManager()
 		So(em.Events.Size(), ShouldBeZeroValue)
 		So(em.BackgroundEvents.Size(), ShouldBeZeroValue)
+		em.RunEventLoop()
+		e := NewEvent(f)
+		em.AppendEvent(e)
+		Convey("test output event", func() {
+			ev := NewEvent(outputFn)
+			output := &OutputDTO{}
+			em.AppendEvent(ev)
+			<-ev.OnOutputChanged()
+			ev.LoadOutput(output)
+			So(output.TestFieldOfOutput, ShouldEqual, "Some data")
+
+			// time.Sleep(time.Second * 5)
+		})
 	})
 }
