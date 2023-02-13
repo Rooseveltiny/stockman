@@ -12,12 +12,13 @@ type TestyDTO struct {
 	TestName string `json:"test_name"`
 }
 
+var f EventFn = func(ctx context.Context, e *Event) {
+	fmt.Println("test print ln")
+	e.NotifyOutputChanged()
+}
+
 func TestEvent(t *testing.T) {
 	Convey("test event init", t, func() {
-		f := func(ctx context.Context, e *Event) {
-			fmt.Println("test print ln")
-			e.NotifyOutputChanged()
-		}
 		e := NewEvent(f)
 		So(e.event, ShouldNotBeNil)
 		So(e.ctx, ShouldNotBeNil)
@@ -43,5 +44,23 @@ func TestEventsList(t *testing.T) {
 	Convey("test events list init", t, func() {
 		el := NewEventsList()
 		So(el.Size(), ShouldBeZeroValue)
+		Convey("test append method", func() {
+			e := NewEvent(f)
+			e1 := NewEvent(f)
+			e2 := NewEvent(f)
+			e3 := NewEvent(f)
+			e4 := NewEvent(f)
+			el.AppendEvent(e)
+			el.AppendEvent(e1)
+			el.AppendEvent(e2)
+			el.AppendEvent(e3)
+			el.AppendEvent(e4)
+			So(el.Size(), ShouldEqual, 5)
+			Convey("test get last method of list", func() {
+				lastUUID := el.Events[len(el.Events)-1].uuid
+				getLastEvent := el.PopEvent()
+				So(lastUUID, ShouldEqual, getLastEvent.uuid)
+			})
+		})
 	})
 }
