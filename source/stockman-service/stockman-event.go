@@ -8,9 +8,11 @@ import (
 	"github.com/google/uuid"
 )
 
+type EventFn = func(context.Context, *Event)
+
 type Event struct {
 	uuid   uuid.UUID
-	event  func(context.Context, *Event)
+	event  EventFn
 	cancel context.CancelFunc
 	ctx    context.Context
 
@@ -48,7 +50,7 @@ func (e *Event) SetInput(DTO interface{}) {
 	})
 }
 
-func (e *Event) LoadInput(DTO *interface{}) {
+func (e *Event) LoadInput(DTO interface{}) {
 	json.Unmarshal(e.input, DTO)
 }
 
@@ -58,12 +60,21 @@ func (e *Event) SetOutput(DTO interface{}) {
 	})
 }
 
-func (e *Event) LoadOutput(DTO *interface{}) {
+func (e *Event) LoadOutput(DTO interface{}) {
 	json.Unmarshal(e.output, DTO)
 }
 
-func NewEvent() *Event {
+func NewEvent(fn EventFn) *Event {
 	uuid, _ := uuid.NewUUID()
 	boolCh := make(chan bool)
-	return &Event{uuid: uuid, outputChanged: boolCh}
+	ctx := context.Background()
+	cancelCtx, cancelFn := context.WithCancel(ctx)
+
+	return &Event{
+		uuid:          uuid,
+		outputChanged: boolCh,
+		cancel:        cancelFn,
+		ctx:           cancelCtx,
+		event:         fn,
+	}
 }
