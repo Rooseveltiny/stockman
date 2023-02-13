@@ -3,85 +3,67 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"sync"
 
 	"github.com/google/uuid"
 )
 
 type Event struct {
-	uuid      uuid.UUID
-	eventFunc func(context.Context, *Event)
+	uuid   uuid.UUID
+	event  func(context.Context, *Event)
+	cancel context.CancelFunc
+	ctx    context.Context
 
-	ctx          context.Context
-	cancelFunc   context.CancelFunc
-	onPause      chan bool
-	inputStream  chan []byte
-	outputStream chan []byte
-	input        []byte
-	output       []byte
+	mu            sync.Mutex
+	input         []byte
+	outputChanged chan bool
+	output        []byte
 }
 
-func (e *Event) Run() {
-	e.eventFunc(e.ctx, e)
+func (e *Event) RunEvent() {
+	go e.event(e.ctx, e)
 }
 
-func (e *Event) Play() {
-	e.onPause <- false
+func (e *Event) CancelEvent() {
+	e.cancel()
 }
 
-func (e *Event) Pause() {
-	e.onPause <- true
+func (e *Event) NotifyOutputChanged() {
+	e.outputChanged <- true
 }
 
-func (e *Event) FinishEvent() {
-	e.cancelFunc()
+func (e *Event) OnOutputChanged() <-chan bool {
+	return e.outputChanged
 }
 
-func (e *Event) EventDone() <-chan struct{} {
-	return e.ctx.Done()
+func (e *Event) LockUnlock(f func()) {
+	e.mu.Lock()
+	defer e.mu.Unlock()
+	f()
 }
 
-func (e *Event) LoadLastOutputValue(DTO *interface{}) {
-	json.Unmarshal(e.output, DTO)
+func (e *Event) SetInput(DTO interface{}) {
+	e.LockUnlock(func() {
+		e.input, _ = json.Marshal(DTO)
+	})
 }
 
-func (e *Event) LoadLastInputValue(DTO *interface{}) {
+func (e *Event) LoadInput(DTO *interface{}) {
 	json.Unmarshal(e.input, DTO)
 }
 
-func (e *Event) SetInputStreamValue(DTO interface{}) {
-	inputValue, _ := json.Marshal(DTO)
-	e.input = inputValue
-	e.inputStream <- inputValue
+func (e *Event) SetOutput(DTO interface{}) {
+	e.LockUnlock(func() {
+		e.output, _ = json.Marshal(DTO)
+	})
 }
 
-func (e *Event) SetOutputStreamValue(DTO interface{}) {
-	outputValue, _ := json.Marshal(DTO)
-	e.output = outputValue
-	e.outputStream <- outputValue
+func (e *Event) LoadOutput(DTO *interface{}) {
+	json.Unmarshal(e.output, DTO)
 }
 
 func NewEvent() *Event {
-	ctx := context.Background()
-	ctxCancel, cancelFunc := context.WithCancel(ctx)
-
-	emptyInputStream := make(chan []byte)
-	emptyOutputStream := make(chan []byte)
-	onPause := make(chan bool)
-	onPause <- false
-
 	uuid, _ := uuid.NewUUID()
-
-	e := &Event{
-		uuid: uuid,
-
-		ctx:        ctxCancel,
-		cancelFunc: cancelFunc,
-
-		onPause: onPause,
-
-		inputStream:  emptyInputStream,
-		outputStream: emptyOutputStream,
-	}
-
-	return e
+	boolCh := make(chan bool)
+	return &Event{uuid: uuid, outputChanged: boolCh}
 }
