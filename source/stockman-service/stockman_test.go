@@ -99,8 +99,6 @@ func TestEventsManager(t *testing.T) {
 			<-ev.OnOutputChanged()
 			ev.LoadOutput(output)
 			So(output.TestFieldOfOutput, ShouldEqual, "Some data")
-
-			// time.Sleep(time.Second * 5)
 		})
 	})
 }
