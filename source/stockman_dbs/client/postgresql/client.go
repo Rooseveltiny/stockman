@@ -18,7 +18,18 @@ type Client interface {
 	Begin(ctx context.Context) (pgx.Tx, error)
 }
 
-func NewClient(ctx context.Context, maxAttempts int, sc config.StorageConfig) (pool *pgxpool.Pool, err error) {
+/*
+Config struct to init postgres client connection to db
+*/
+type PostgresConfig struct {
+	Username string
+	Password string
+	Host     string
+	Port     string
+	Database string
+}
+
+func NewClient(ctx context.Context, sc config.StorageConfig) (pool *pgxpool.Pool, err error) {
 	dsn := fmt.Sprintf("postgresql://%s:%s@%s:%s/%s", sc.Username, sc.Password, sc.Host, sc.Port, sc.Database)
 
 	pool, err = pgxpool.Connect(ctx, dsn)
