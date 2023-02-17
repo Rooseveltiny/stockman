@@ -23,7 +23,6 @@ func InitLogger() {
 		fmt.Println("Failed to create logfile" + "system_logging.log")
 		panic(err)
 	}
-	defer f.Close()
 
 	L = &logrus.Logger{
 		Out:   io.MultiWriter(f, os.Stdout),
