@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"restapi-lesson/internal/config"
 
 	"github.com/jackc/pgconn"
 	"github.com/jackc/pgx/v4"
@@ -29,7 +28,7 @@ type PostgresConfig struct {
 	Database string
 }
 
-func NewClient(ctx context.Context, sc config.StorageConfig) (pool *pgxpool.Pool, err error) {
+func NewClient(ctx context.Context, sc PostgresConfig) (pool *pgxpool.Pool, err error) {
 	dsn := fmt.Sprintf("postgresql://%s:%s@%s:%s/%s", sc.Username, sc.Password, sc.Host, sc.Port, sc.Database)
 
 	pool, err = pgxpool.Connect(ctx, dsn)

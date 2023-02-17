@@ -6,7 +6,9 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/jackc/pgconn v1.14.0
 	github.com/jackc/pgx/v4 v4.18.0
+	github.com/sirupsen/logrus v1.4.2
 	github.com/smartystreets/goconvey v1.7.2
+	github.com/t-tomalak/logrus-easy-formatter v0.0.0-20190827215021-c074f06c5816
 )
 
 require (
@@ -19,7 +21,9 @@ require (
 	github.com/jackc/pgtype v1.14.0 // indirect
 	github.com/jackc/puddle v1.3.0 // indirect
 	github.com/jtolds/gls v4.20.0+incompatible // indirect
+	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
 	github.com/smartystreets/assertions v1.2.0 // indirect
 	golang.org/x/crypto v0.6.0 // indirect
+	golang.org/x/sys v0.5.0 // indirect
 	golang.org/x/text v0.7.0 // indirect
 )
