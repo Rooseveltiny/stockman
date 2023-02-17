@@ -1,0 +1,6 @@
+database: stockman_db_test
+username: stockman
+password: 971501
+host: localhost
+port: 5432
+

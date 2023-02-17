@@ -3,8 +3,9 @@ package postgresql
 import (
 	"context"
 	"fmt"
-	"log"
+	logger "stockman/source/stockman_logger"
 
+	"github.com/ilyakaznacheev/cleanenv"
 	"github.com/jackc/pgconn"
 	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
@@ -21,15 +22,28 @@ type Client interface {
 Config struct to init postgres client connection to db
 */
 type PostgresConfig struct {
-	Username string
-	Password string
-	Host     string
-	Port     string
-	Database string
+	Username string `yaml:"username"`
+	Password string `yaml:"password"`
+	Host     string `yaml:"host"`
+	Port     string `yaml:"port"`
+	Database string `yaml:"database"`
+}
+
+func (sc *PostgresConfig) DSN() string {
+	return fmt.Sprintf("postgresql://%s:%s@%s:%s/%s", sc.Username, sc.Password, sc.Host, sc.Port, sc.Database)
+}
+
+func NewPostgresConfig() *PostgresConfig {
+	cfg := PostgresConfig{}
+	err := cleanenv.ReadConfig("db_settings.yaml", &cfg)
+	if err != nil {
+		logger.L.Errorln(err)
+	}
+	return &cfg
 }
 
 func NewClient(ctx context.Context, sc PostgresConfig) (pool *pgxpool.Pool, err error) {
-	dsn := fmt.Sprintf("postgresql://%s:%s@%s:%s/%s", sc.Username, sc.Password, sc.Host, sc.Port, sc.Database)
+	dsn := sc.DSN()
 
 	pool, err = pgxpool.Connect(ctx, dsn)
 	if err != nil {
@@ -37,7 +51,7 @@ func NewClient(ctx context.Context, sc PostgresConfig) (pool *pgxpool.Pool, err 
 	}
 
 	if err != nil {
-		log.Fatal("can't connect to db")
+		logger.L.Errorln("can't connect to db")
 	}
 
 	return pool, nil
