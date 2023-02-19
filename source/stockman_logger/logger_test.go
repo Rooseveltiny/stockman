@@ -21,5 +21,4 @@ func TestLogger(t *testing.T) {
 		L.Out = io.MultiWriter(f, os.Stdout)
 		L.Info("this is info message")
 	})
-
 }
