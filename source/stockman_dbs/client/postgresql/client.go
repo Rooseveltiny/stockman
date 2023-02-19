@@ -29,6 +29,7 @@ type PostgresConfig struct {
 	Database string `yaml:"database"`
 }
 
+// Database source name : a special string to perform db connection
 func (sc *PostgresConfig) DSN() string {
 	return fmt.Sprintf("postgresql://%s:%s@%s:%s/%s", sc.Username, sc.Password, sc.Host, sc.Port, sc.Database)
 }
