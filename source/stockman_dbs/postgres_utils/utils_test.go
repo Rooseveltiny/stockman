@@ -1,7 +1,13 @@
 package postgresutils
 
-import "testing"
+import (
+	"context"
+	"stockman/source/stockman_dbs/client/postgresql"
+	"testing"
+)
 
 func TestRunSQLFunc(t *testing.T) {
-	RunSQLFile("test_files/sql_1.sql")
+	cfg := *postgresql.NewPostgresConfig()
+	c, _ := postgresql.NewClient(context.TODO(), cfg)
+	RunSQLFile(context.TODO(), c, "test_files/sql_1.sql")
 }

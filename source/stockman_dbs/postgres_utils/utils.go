@@ -1,6 +1,7 @@
 package postgresutils
 
 import (
+	"bufio"
 	"context"
 	"fmt"
 	"os"
@@ -14,9 +15,8 @@ func RunSQLFile(ctx context.Context, client postgresql.Client, filePath string) 
 		fmt.Println("failed to locate logfile")
 		logger.L.Errorln(err)
 	}
-
-	fmt.Println(f)
-
+	scanner := bufio.NewScanner(f)
+	fmt.Println(scanner.Text())
 }
 
 func RunSQLFiles(ctx context.Context, client postgresql.Client, filePath []string) {}

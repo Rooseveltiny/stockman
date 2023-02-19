@@ -36,7 +36,7 @@ func (sc *PostgresConfig) DSN() string {
 
 func NewPostgresConfig() *PostgresConfig {
 	cfg := PostgresConfig{}
-	err := cleanenv.ReadConfig("db_settings.yaml", &cfg)
+	err := cleanenv.ReadConfig("source/stockman_dbs/client/postgresql/db_settings.yaml", &cfg)
 	if err != nil {
 		logger.L.Errorln(err)
 	}
