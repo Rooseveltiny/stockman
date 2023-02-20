@@ -3,25 +3,30 @@ package postgresutils
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"stockman/source/stockman_dbs/client/postgresql"
 	logger "stockman/source/stockman_logger"
 	"strings"
 )
 
-func RunSQLFile(ctx context.Context, client postgresql.Client, filePath string) {
-	content, err := ioutil.ReadFile(filePath)
+func RunSQLFile(ctx context.Context, client postgresql.Client, filePath string) (ok bool) {
+	content, err := os.ReadFile(filePath)
 	if err != nil {
 		fmt.Println("failed to locate logfile")
 		logger.L.Errorln(err)
 	}
 	SQLRAW := getRidOfScreening(string(content))
-	p, err := client.Exec(ctx, SQLRAW)
-	fmt.Println(p)
-	fmt.Println(err)
+	_, err_sql := client.Exec(ctx, SQLRAW)
+	if err_sql != nil {
+		logger.L.Errorln(err_sql)
+		return false
+	}
+	return true
 }
 
-func RunSQLFiles(ctx context.Context, client postgresql.Client, filePath []string) {}
+func RunSQLFiles(ctx context.Context, client postgresql.Client, filePath []string) {
+
+}
 
 func getRidOfScreening(i string) string {
 	var screeningSymbols []string
