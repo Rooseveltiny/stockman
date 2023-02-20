@@ -4,19 +4,32 @@ import (
 	"context"
 	"fmt"
 	"io/ioutil"
-	"os"
 	"stockman/source/stockman_dbs/client/postgresql"
 	logger "stockman/source/stockman_logger"
+	"strings"
 )
 
 func RunSQLFile(ctx context.Context, client postgresql.Client, filePath string) {
-	f, err := os.OpenFile(filePath, os.O_RDONLY, 0644)
+	content, err := ioutil.ReadFile(filePath)
 	if err != nil {
 		fmt.Println("failed to locate logfile")
 		logger.L.Errorln(err)
 	}
-	c, _ := ioutil.ReadAll(f)
-	fmt.Println(string(c))
+	SQLRAW := getRidOfScreening(string(content))
+	p, err := client.Exec(ctx, SQLRAW)
+	fmt.Println(p)
+	fmt.Println(err)
 }
 
 func RunSQLFiles(ctx context.Context, client postgresql.Client, filePath []string) {}
+
+func getRidOfScreening(i string) string {
+	var screeningSymbols []string
+	screeningSymbols = append(screeningSymbols, "\n")
+	screeningSymbols = append(screeningSymbols, "\t")
+
+	for _, s := range screeningSymbols {
+		i = strings.ReplaceAll(i, s, "")
+	}
+	return i
+}
