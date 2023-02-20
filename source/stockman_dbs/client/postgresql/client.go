@@ -3,6 +3,7 @@ package postgresql
 import (
 	"context"
 	"fmt"
+	"stockman/source"
 	logger "stockman/source/stockman_logger"
 
 	"github.com/ilyakaznacheev/cleanenv"
@@ -36,7 +37,7 @@ func (sc *PostgresConfig) DSN() string {
 
 func NewPostgresConfig() *PostgresConfig {
 	cfg := PostgresConfig{}
-	err := cleanenv.ReadConfig("source/stockman_dbs/client/postgresql/db_settings.yaml", &cfg)
+	err := cleanenv.ReadConfig(source.DB_YAML, &cfg)
 	if err != nil {
 		logger.L.Errorln(err)
 	}
