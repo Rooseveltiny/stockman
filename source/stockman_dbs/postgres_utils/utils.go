@@ -4,12 +4,13 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"path/filepath"
 	"stockman/source/stockman_dbs/client/postgresql"
 	logger "stockman/source/stockman_logger"
 	"strings"
 )
 
-func RunSQLFile(ctx context.Context, client postgresql.Client, filePath string) (ok bool) {
+func RunSQLFile(ctx context.Context, client postgresql.Client, filePath string) error {
 	content, err := os.ReadFile(filePath)
 	if err != nil {
 		fmt.Println("failed to locate logfile")
@@ -19,12 +20,71 @@ func RunSQLFile(ctx context.Context, client postgresql.Client, filePath string) 
 	_, err_sql := client.Exec(ctx, SQLRAW)
 	if err_sql != nil {
 		logger.L.Errorln(err_sql)
-		return false
+		return err_sql
 	}
-	return true
+	return nil
 }
 
-func RunSQLFiles(ctx context.Context, client postgresql.Client, filePath []string) {}
+func RunSQLFiles(ctx context.Context, client postgresql.Client, filePaths []string) error {
+	for _, f := range filePaths {
+		err := RunSQLFile(ctx, client, f)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+/*
+Function applies all sql tables and commands earlier prepared
+*/
+func RunPostgresSQL(ctx context.Context, client postgresql.Client) error {
+	allSqlFilesToPerform := getListOfPostgresSQLFiles(postgresql.NewPostgresConfig().SqlFolder)
+	err := RunSQLFiles(ctx, client, allSqlFilesToPerform)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func PrepareTestPostgresSQL(ctx context.Context, client postgresql.Client) error { return nil }
+
+func DropPreparedTestPostgresSQL(ctx context.Context, client postgresql.Client) error { return nil }
+
+func getListOfPostgresSQLFiles(baseDir string) []string {
+	sqlFilePaths := make([]string, 0)
+	subDirs := make([]string, 0)
+
+	/* retrieve base directory */
+	entries, err := os.ReadDir(baseDir)
+	if err != nil {
+		logger.L.Errorln(err)
+	}
+
+	/* collecting all directories with files */
+	for _, e := range entries {
+		if e.IsDir() {
+			subDirs = append(subDirs, filepath.Join(baseDir, e.Name()))
+		}
+	}
+
+	/* collecting all sql files */
+	for _, subDir := range subDirs {
+		sqlFiles, err := os.ReadDir(subDir)
+		if err != nil {
+			logger.L.Errorln(err)
+		}
+		for _, sqlFile := range sqlFiles {
+			if !sqlFile.IsDir() {
+				if strings.Contains(sqlFile.Name(), ".sql") {
+					sqlFilePaths = append(sqlFilePaths, filepath.Join(subDir, sqlFile.Name()))
+				}
+			}
+		}
+	}
+
+	return sqlFilePaths
+}
 
 func getRidOfScreening(i string) string {
 	var screeningSymbols []string

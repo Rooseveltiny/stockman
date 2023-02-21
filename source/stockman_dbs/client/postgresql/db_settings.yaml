@@ -3,3 +3,4 @@ username: stockman
 password: SbGBbsSvRSvnL1kfWBD2TVR2
 host: localhost
 port: 5432
+preparedsql_folder: /Users/saveliytrifanenkov/Desktop/Проекты/Stockman/stockman/source/stockman_dbs/postgres_sql
