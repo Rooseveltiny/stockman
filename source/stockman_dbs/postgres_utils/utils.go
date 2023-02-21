@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"stockman/source"
 	"stockman/source/stockman_dbs/client/postgresql"
 	logger "stockman/source/stockman_logger"
 	"strings"
@@ -47,10 +48,18 @@ func RunPostgresSQL(ctx context.Context, client postgresql.Client, dbConfigPath 
 	return nil
 }
 
-func PrepareTestPostgresSQL(ctx context.Context, client postgresql.Client) error { return nil }
+func PrepareTestPostgresSQL(ctx context.Context, client postgresql.Client) error {
+	return RunPostgresSQL(ctx, client, source.DB_TEST_YAML)
+}
 
 func DropPreparedTestPostgresSQL(ctx context.Context, client postgresql.Client) error {
-	return nil
+	q :=
+		`
+		DROP SCHEMA public CASCADE;
+		CREATE SCHEMA public;
+	`
+	_, err := client.Exec(ctx, q)
+	return err
 }
 
 func getListOfPostgresSQLFiles(baseDir string) []string {

@@ -2,7 +2,6 @@ package postgresutils
 
 import (
 	"context"
-	"fmt"
 	"stockman/source"
 	"stockman/source/stockman_dbs/client/postgresql"
 	"strings"
@@ -35,8 +34,12 @@ func TestApplyAllPreparedSQL(t *testing.T) {
 		convey.Convey("apply all postgres tables", func() {
 			ctx := context.TODO()
 			postgresClient, _ := postgresql.NewClient(ctx, *postgresql.NewPostgresConfig(source.DB_TEST_YAML))
-			err := RunPostgresSQL(ctx, postgresClient, source.DB_TEST_YAML)
-			fmt.Println(err)
+			err := PrepareTestPostgresSQL(ctx, postgresClient)
+			convey.So(err, convey.ShouldBeNil)
+			convey.Convey("drop all test tables", func() {
+				err := DropPreparedTestPostgresSQL(ctx, postgresClient)
+				convey.So(err, convey.ShouldBeNil)
+			})
 		})
 	})
 }
