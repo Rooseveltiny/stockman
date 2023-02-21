@@ -13,10 +13,10 @@ import (
 
 func TestRunSQLFunc(t *testing.T) {
 	convey.Convey("test sql raw exec", t, func() {
-		cfg := *postgresql.NewPostgresConfig()
+		cfg := *postgresql.NewPostgresConfig(source.DB_TEST_YAML)
 		c, _ := postgresql.NewClient(context.TODO(), cfg)
 		ok := RunSQLFile(context.TODO(), c, "test_files/sql_1.sql")
-		convey.So(ok, convey.ShouldBeTrue)
+		convey.So(ok, convey.ShouldBeNil)
 		convey.Convey("test sql raw write exec", func() {
 			SQLRAW := `
 			INSERT INTO test_table (username)
@@ -35,7 +35,7 @@ func TestApplyAllPreparedSQL(t *testing.T) {
 		convey.Convey("apply all postgres tables", func() {
 			ctx := context.TODO()
 			postgresClient, _ := postgresql.NewClient(ctx, *postgresql.NewPostgresConfig(source.DB_TEST_YAML))
-			err := RunPostgresSQL(ctx, postgresClient)
+			err := RunPostgresSQL(ctx, postgresClient, source.DB_TEST_YAML)
 			fmt.Println(err)
 		})
 	})

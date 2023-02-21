@@ -38,8 +38,8 @@ func RunSQLFiles(ctx context.Context, client postgresql.Client, filePaths []stri
 /*
 Function applies all sql tables and commands earlier prepared
 */
-func RunPostgresSQL(ctx context.Context, client postgresql.Client) error {
-	allSqlFilesToPerform := getListOfPostgresSQLFiles(postgresql.NewPostgresConfig().SqlFolder)
+func RunPostgresSQL(ctx context.Context, client postgresql.Client, dbConfigPath string) error {
+	allSqlFilesToPerform := getListOfPostgresSQLFiles(postgresql.NewPostgresConfig(dbConfigPath).SqlFolder)
 	err := RunSQLFiles(ctx, client, allSqlFilesToPerform)
 	if err != nil {
 		return err
