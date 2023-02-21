@@ -24,9 +24,7 @@ func RunSQLFile(ctx context.Context, client postgresql.Client, filePath string) 
 	return true
 }
 
-func RunSQLFiles(ctx context.Context, client postgresql.Client, filePath []string) {
-
-}
+func RunSQLFiles(ctx context.Context, client postgresql.Client, filePath []string) {}
 
 func getRidOfScreening(i string) string {
 	var screeningSymbols []string
