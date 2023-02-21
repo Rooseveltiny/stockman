@@ -36,9 +36,17 @@ func (sc *PostgresConfig) DSN() string {
 	return fmt.Sprintf("postgresql://%s:%s@%s:%s/%s", sc.Username, sc.Password, sc.Host, sc.Port, sc.Database)
 }
 
-func NewPostgresConfig() *PostgresConfig {
+func NewDevConfig() *PostgresConfig {
+	return NewPostgresConfig(source.DB_DEV_YAML)
+}
+
+func NewTestConfig() *PostgresConfig {
+	return NewPostgresConfig(source.DB_TEST_YAML)
+}
+
+func NewPostgresConfig(yamlPath string) *PostgresConfig {
 	cfg := PostgresConfig{}
-	err := cleanenv.ReadConfig(source.DB_YAML, &cfg)
+	err := cleanenv.ReadConfig(yamlPath, &cfg)
 	if err != nil {
 		logger.L.Errorln(err)
 	}

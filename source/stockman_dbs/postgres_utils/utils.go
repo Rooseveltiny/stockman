@@ -49,9 +49,12 @@ func RunPostgresSQL(ctx context.Context, client postgresql.Client) error {
 
 func PrepareTestPostgresSQL(ctx context.Context, client postgresql.Client) error { return nil }
 
-func DropPreparedTestPostgresSQL(ctx context.Context, client postgresql.Client) error { return nil }
+func DropPreparedTestPostgresSQL(ctx context.Context, client postgresql.Client) error {
+	return nil
+}
 
 func getListOfPostgresSQLFiles(baseDir string) []string {
+
 	sqlFilePaths := make([]string, 0)
 	subDirs := make([]string, 0)
 

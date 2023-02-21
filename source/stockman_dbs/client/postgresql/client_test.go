@@ -10,14 +10,14 @@ import (
 
 func TestDBConfigInit(t *testing.T) {
 	convey.Convey("test init db settings", t, func() {
-		db_c := NewPostgresConfig()
+		db_c := NewTestConfig()
 		convey.So(db_c.Host, convey.ShouldEqual, "localhost")
 	})
 }
 
 func TestPostgresClientInit(t *testing.T) {
 	convey.Convey("test postgres client init process", t, func() {
-		db_c := NewPostgresConfig()
+		db_c := NewTestConfig()
 		c, err := NewClient(context.TODO(), *db_c)
 		if err != nil {
 			logger.L.Errorln(err)

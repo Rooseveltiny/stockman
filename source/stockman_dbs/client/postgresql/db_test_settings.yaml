@@ -1,4 +1,4 @@
-database: stockman_db_test
+database: stockman_test
 username: stockman
 password: SbGBbsSvRSvnL1kfWBD2TVR2
 host: localhost

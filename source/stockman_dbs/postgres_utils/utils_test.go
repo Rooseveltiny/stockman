@@ -3,6 +3,7 @@ package postgresutils
 import (
 	"context"
 	"fmt"
+	"stockman/source"
 	"stockman/source/stockman_dbs/client/postgresql"
 	"strings"
 	"testing"
@@ -28,12 +29,12 @@ func TestRunSQLFunc(t *testing.T) {
 
 func TestApplyAllPreparedSQL(t *testing.T) {
 	convey.Convey("init all file path", t, func() {
-		cfg := postgresql.NewPostgresConfig()
+		cfg := postgresql.NewPostgresConfig(source.DB_TEST_YAML)
 		l := getListOfPostgresSQLFiles(cfg.SqlFolder)
 		convey.So(strings.Contains(l[len(l)-1], ".sql"), convey.ShouldBeTrue)
 		convey.Convey("apply all postgres tables", func() {
 			ctx := context.TODO()
-			postgresClient, _ := postgresql.NewClient(ctx, *postgresql.NewPostgresConfig())
+			postgresClient, _ := postgresql.NewClient(ctx, *postgresql.NewPostgresConfig(source.DB_TEST_YAML))
 			err := RunPostgresSQL(ctx, postgresClient)
 			fmt.Println(err)
 		})
