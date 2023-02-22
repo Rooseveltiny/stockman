@@ -1,5 +1,9 @@
 package videocamera
 
+import (
+	"context"
+)
+
 type VideoCamera struct {
 	Address  string
 	Port     string
@@ -12,7 +16,9 @@ func (vc *VideoCamera) CheckConnectionStatus() {}
 
 func (vc *VideoCamera) VideoStreaming() {}
 
-func (vc *VideoCamera) CreateVideoCamera(CameraCreateDTO) {}
+func (vc *VideoCamera) CreateVideoCamera(ctx context.Context, camera *VideoCamera) error {
+	// return
+}
 
 func (vc *VideoCamera) FetchAllVideoCameras() {}
 
