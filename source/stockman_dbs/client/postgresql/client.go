@@ -7,14 +7,15 @@ import (
 	logger "stockman/source/stockman_logger"
 
 	"github.com/ilyakaznacheev/cleanenv"
-	"github.com/jackc/pgconn"
-	"github.com/jackc/pgx/v4"
-	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type Client interface {
 	Exec(ctx context.Context, sql string, arguments ...interface{}) (pgconn.CommandTag, error)
-	Query(ctx context.Context, sql string, args ...interface{}) (pgx.Rows, error)
+	// Query(ctx context.Context, sql string, args ...interface{}) (pgx.Rows, error)
+	Query(ctx context.Context, query string, args ...interface{}) (pgx.Rows, error)
 	QueryRow(ctx context.Context, sql string, args ...interface{}) pgx.Row
 	Begin(ctx context.Context) (pgx.Tx, error)
 }
@@ -56,7 +57,7 @@ func NewPostgresConfig(yamlPath string) *PostgresConfig {
 func NewClient(ctx context.Context, sc PostgresConfig) (pool *pgxpool.Pool, err error) {
 	dsn := sc.DSN()
 
-	pool, err = pgxpool.Connect(ctx, dsn)
+	pool, err = pgxpool.New(ctx, dsn)
 	if err != nil {
 		return nil, err
 	}

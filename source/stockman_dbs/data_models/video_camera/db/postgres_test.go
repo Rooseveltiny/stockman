@@ -34,9 +34,16 @@ func TestRepository(t *testing.T) {
 			convey.So(err, convey.ShouldBeNil)
 			_, parseErr := uuid.Parse(link)
 			convey.So(parseErr, convey.ShouldBeNil)
+			convey.Convey("test get this row from database", func() {
+				f, _ := repo.GetByLink(ctx, link)
+				convey.So(f.Address, convey.ShouldEqual, "testaddress")
+				convey.So(f.Port, convey.ShouldEqual, "5454")
+				convey.So(f.Login, convey.ShouldEqual, "stockman")
+				convey.So(f.Password, convey.ShouldEqual, "43598340f345erg$T#$R#")
+			})
 		})
 	})
 
-	// after test
+	/* after test */
 	postgresutils.DropPreparedTestPostgresSQL(ctx, client)
 }
