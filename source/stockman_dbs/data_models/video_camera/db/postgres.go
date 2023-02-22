@@ -1,7 +1,9 @@
 package db
 
 import (
+	"context"
 	"stockman/source/stockman_dbs/client/postgresql"
+	videocamera "stockman/source/stockman_dbs/data_models/video_camera"
 
 	"github.com/sirupsen/logrus"
 )
@@ -18,13 +20,20 @@ func NewRepository(client postgresql.Client, logger *logrus.Logger) *repository 
 	}
 }
 
-// func (r *repository) Create(ctx context.Context, vc videocamera.CameraCreateDTO) error {
-// 	q := `
-// 		INSERT INTO video_camera
-// 			(address, port, login, password, link)
-// 		VALUES
-// 			($1, $2, $3, $4, $5)
-// 		RETURNING link
-// 	`
-
-// }
+func (r *repository) Create(ctx context.Context, vc videocamera.CameraCreateDTO) (string, error) {
+	q := `
+		INSERT INTO video_camera
+			(address, port, login, password)
+		VALUES
+			($1, $2, $3, $4)
+		RETURNING link
+	`
+	row := r.client.QueryRow(ctx, q, vc.Address, vc.Port, vc.Login, vc.Password)
+	var link string
+	err := row.Scan(&link)
+	if err != nil {
+		r.logger.Errorln(err)
+		return "", err
+	}
+	return link, nil
+}

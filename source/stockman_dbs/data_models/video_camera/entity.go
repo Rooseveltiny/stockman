@@ -17,7 +17,7 @@ func (vc *VideoCamera) CheckConnectionStatus() {}
 func (vc *VideoCamera) VideoStreaming() {}
 
 func (vc *VideoCamera) CreateVideoCamera(ctx context.Context, camera *VideoCamera) error {
-	// return
+	return nil
 }
 
 func (vc *VideoCamera) FetchAllVideoCameras() {}
