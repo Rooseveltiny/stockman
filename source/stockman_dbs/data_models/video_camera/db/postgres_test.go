@@ -16,7 +16,7 @@ func TestRepository(t *testing.T) {
 	ctx := context.TODO()
 	client, _ := postgresql.NewClient(ctx, *postgresql.NewTestConfig())
 
-	// before test
+	/* before test */
 	postgresutils.PrepareTestPostgresSQL(ctx, client)
 
 	convey.Convey("init new repository", t, func() {
