@@ -15,4 +15,4 @@ func (vc *VideoCamera) VideoStream()                {}
 
 func CreateNewCamera(camera videocamera.CameraCreateDTO) *VideoCamera { return &VideoCamera{} }
 func AllVideoCameras() []*VideoCamera                                 { return nil }
-func UpdateVideoCamera()
+func UpdateVideoCamera() error                                        { return nil }
