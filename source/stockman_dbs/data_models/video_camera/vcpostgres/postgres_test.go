@@ -1,4 +1,4 @@
-package db
+package vcpostgres
 
 import (
 	"context"
@@ -20,7 +20,7 @@ func TestRepository(t *testing.T) {
 	postgresutils.PrepareTestPostgresSQL(ctx, client)
 
 	convey.Convey("init new repository", t, func() {
-		repo := NewRepository(client, logger.L)
+		repo := NewRepository(ctx, logger.L)
 		convey.So(repo.client, convey.ShouldNotBeNil)
 		convey.So(repo.logger, convey.ShouldNotBeNil)
 		convey.Convey("create video camera", func() {

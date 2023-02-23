@@ -1,4 +1,4 @@
-package db
+package vcpostgres
 
 import (
 	"context"
@@ -15,7 +15,8 @@ type repository struct {
 	logger *logrus.Logger
 }
 
-func NewRepository(client postgresql.Client, logger *logrus.Logger) *repository {
+func NewRepository(ctx context.Context, logger *logrus.Logger) *repository {
+	client, _ := postgresql.GetPostgresClient(ctx)
 	return &repository{
 		client,
 		logger,

@@ -2,6 +2,7 @@ package postgresql
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	"stockman/source"
 	logger "stockman/source/stockman_logger"
@@ -51,6 +52,23 @@ func NewPostgresConfig(yamlPath string) *PostgresConfig {
 		logger.L.Errorln(err)
 	}
 	return &cfg
+}
+
+func GetPostgresClient(ctx context.Context) (*pgxpool.Pool, error) {
+	fmt.Println("stop")
+	if flag.Lookup("test.v") == nil {
+		return NewDevClient(ctx) /* normal call */
+	} else {
+		return NewTestClient(ctx) /* testy call */
+	}
+}
+
+func NewTestClient(ctx context.Context) (pool *pgxpool.Pool, err error) {
+	return NewClient(ctx, *NewTestConfig())
+}
+
+func NewDevClient(ctx context.Context) (pool *pgxpool.Pool, err error) {
+	return NewClient(ctx, *NewDevConfig())
 }
 
 func NewClient(ctx context.Context, sc PostgresConfig) (pool *pgxpool.Pool, err error) {

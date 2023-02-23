@@ -2,8 +2,9 @@ package stockmanvideomanager
 
 import videocamera "stockman/source/stockman_dbs/data_models/video_camera"
 
-func AddNewCamera() videocamera.CameraCreateDTO {
-	return videocamera.CameraCreateDTO{}
+func AddNewCamera() videocamera.CameraReadDTO {
+
+	return videocamera.CameraReadDTO{}
 }
 
 func AllCameras() []videocamera.CameraReadDTO {
