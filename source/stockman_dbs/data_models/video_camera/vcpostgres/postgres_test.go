@@ -18,6 +18,8 @@ func TestRepository(t *testing.T) {
 
 	/* before test */
 	postgresutils.PrepareTestPostgresSQL(ctx, client)
+	/* after test */
+	defer postgresutils.DropPreparedTestPostgresSQL(ctx, client)
 
 	convey.Convey("init new repository", t, func() {
 		repo := NewRepository(ctx, logger.L)
@@ -41,9 +43,22 @@ func TestRepository(t *testing.T) {
 				convey.So(f.Login, convey.ShouldEqual, "stockman")
 				convey.So(f.Password, convey.ShouldEqual, "43598340f345erg$T#$R#")
 			})
+			convey.Convey("test get all from db", func() {
+				videocameraDTO := videocamera.CameraCreateDTO{
+					Address:  "testaddress",
+					Port:     "5454",
+					Login:    "stockman",
+					Password: "43598340f345erg$T#$R#",
+				}
+				repo.Create(ctx, videocameraDTO)
+				repo.Create(ctx, videocameraDTO)
+				repo.Create(ctx, videocameraDTO)
+				repo.Create(ctx, videocameraDTO)
+				repo.Create(ctx, videocameraDTO)
+				vcddtos, errgetAll := repo.GetAll(ctx)
+				convey.So(errgetAll, convey.ShouldBeNil)
+				convey.So(len(vcddtos), convey.ShouldEqual, 7 /* one more because first func called twice */)
+			})
 		})
 	})
-
-	/* after test */
-	postgresutils.DropPreparedTestPostgresSQL(ctx, client)
 }
