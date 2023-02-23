@@ -5,6 +5,8 @@ import (
 	videocamera "stockman/source/stockman_dbs/data_models/video_camera"
 	"stockman/source/stockman_dbs/data_models/video_camera/vcpostgres"
 	logger "stockman/source/stockman_logger"
+
+	"github.com/dranikpg/go-dto"
 )
 
 type VideoCamera struct {
@@ -26,6 +28,21 @@ func CreateNewCamera(ctx context.Context, vc videocamera.CameraCreateDTO) (strin
 		return "", err
 	}
 	return vcLink, nil
+}
+
+func GetVideoCamera(ctx context.Context, link string) (*VideoCamera, error) {
+	repo := vcpostgres.NewRepository(ctx, logger.L)
+	vcDTO, err := repo.GetByLink(ctx, link)
+	if err != nil {
+		return nil, nil
+	}
+	var vc *VideoCamera
+	errMap := dto.Map(vc, vcDTO)
+	if errMap != nil {
+		logger.L.Errorln(errMap)
+		return nil, errMap
+	}
+	return vc, nil
 }
 
 func AllVideoCameras() []*VideoCamera { return nil }

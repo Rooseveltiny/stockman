@@ -55,7 +55,6 @@ func NewPostgresConfig(yamlPath string) *PostgresConfig {
 }
 
 func GetPostgresClient(ctx context.Context) (*pgxpool.Pool, error) {
-	fmt.Println("stop")
 	if flag.Lookup("test.v") == nil {
 		return NewDevClient(ctx) /* normal call */
 	} else {
