@@ -42,6 +42,18 @@ func (r *repository) Create(ctx context.Context, vc videocamera.CameraCreateDTO)
 	return link, nil
 }
 
+func (r *repository) GetAll(ctx context.Context) ([]*videocamera.CameraReadDTO, error) {
+	q := `
+	SELECT * FROM video_camera
+	`
+	var ccds []*videocamera.CameraReadDTO
+	err := pgxscan.Select(ctx, r.client, &ccds, q)
+	if err != nil {
+		logger.L.Errorln(err)
+	}
+	return ccds, nil
+}
+
 func (r *repository) GetByLink(ctx context.Context, link string) (*videocamera.CameraReadDTO, error) {
 	q := `
 		SELECT * FROM video_camera

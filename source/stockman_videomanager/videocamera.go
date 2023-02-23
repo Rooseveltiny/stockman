@@ -48,4 +48,5 @@ func GetVideoCamera(ctx context.Context, link string) (*VideoCamera, error) {
 func AllVideoCameras() []*VideoCamera {
 	return nil
 }
+
 func UpdateVideoCamera() error { return nil }
