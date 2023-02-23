@@ -36,14 +36,16 @@ func GetVideoCamera(ctx context.Context, link string) (*VideoCamera, error) {
 	if err != nil {
 		return nil, nil
 	}
-	var vc *VideoCamera
-	errMap := dto.Map(vc, vcDTO)
+	var vc VideoCamera
+	errMap := dto.Map(&vc, vcDTO)
 	if errMap != nil {
 		logger.L.Errorln(errMap)
 		return nil, errMap
 	}
-	return vc, nil
+	return &vc, nil
 }
 
-func AllVideoCameras() []*VideoCamera { return nil }
-func UpdateVideoCamera() error        { return nil }
+func AllVideoCameras() []*VideoCamera {
+	return nil
+}
+func UpdateVideoCamera() error { return nil }
