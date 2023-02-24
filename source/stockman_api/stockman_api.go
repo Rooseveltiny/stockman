@@ -14,6 +14,6 @@ func AddVideoCamera(dto videocamera.CameraCreateDTO) *core.StockmanResponse[stri
 	<-ev.OnOutputChanged()
 	var d string
 	ev.LoadOutput(&d)
-	stockmanResponse := core.NewStockmanResponse(d, nil)
+	stockmanResponse := core.NewStockmanResponse(d, ev.Error())
 	return stockmanResponse
 }

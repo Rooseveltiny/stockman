@@ -17,6 +17,7 @@ type Event struct {
 	ctx    context.Context
 
 	mu            sync.Mutex
+	err           error
 	input         []byte
 	outputChanged chan bool
 	output        []byte
@@ -62,6 +63,16 @@ func (e *Event) SetOutput(DTO interface{}) {
 
 func (e *Event) LoadOutput(DTO interface{}) {
 	json.Unmarshal(e.output, DTO)
+}
+
+func (e *Event) SetError(err error) {
+	e.LockUnlock(func() {
+		e.err = err
+	})
+}
+
+func (e *Event) Error() error {
+	return e.err
 }
 
 func NewEvent(fn EventFn) *Event {

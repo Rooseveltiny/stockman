@@ -2,7 +2,6 @@ package stockmanapi
 
 import (
 	"context"
-	"fmt"
 	core "stockman/source/stockman_core"
 	"stockman/source/stockman_dbs/client/postgresql"
 	videocamera "stockman/source/stockman_dbs/data_models/video_camera"
@@ -62,7 +61,7 @@ func TestAddVideoCamera(t *testing.T) {
 			Login:    "Saveliy Trif",
 			Password: "manyAprilsPastManyDays32432%#$#$%^#$^@#$#(%(GK))",
 		}
-		r := AddVideoCamera(newCamera)
-		fmt.Println(r)
+		cameraLink := AddVideoCamera(newCamera)
+		convey.So(cameraLink.Err, convey.ShouldBeNil)
 	})
 }

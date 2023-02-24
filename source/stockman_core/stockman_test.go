@@ -2,6 +2,7 @@ package core
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"testing"
 
@@ -44,6 +45,12 @@ func TestEvent(t *testing.T) {
 				output := &TestyDTO{}
 				e.LoadOutput(output)
 				So(output.TestName, ShouldEqual, testName)
+				Convey("test error occur", func() {
+					So(e.Error(), ShouldBeNil)
+					e.SetError(errors.New("some error occured"))
+					err := e.Error()
+					So(err, ShouldBeError)
+				})
 			})
 		})
 	})
