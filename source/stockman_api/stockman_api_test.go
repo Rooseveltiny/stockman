@@ -64,7 +64,11 @@ func TestAddVideoCamera(t *testing.T) {
 		cameraLink := AddVideoCamera(newCamera)
 		convey.So(cameraLink.Err, convey.ShouldBeNil)
 		convey.Convey("get video camera by link", func() {
-
+			vc := GetVideoCameraDTO(cameraLink.DTOData)
+			convey.So(newCamera.Address, convey.ShouldEqual, vc.DTOData.Address)
+			convey.So(newCamera.Login, convey.ShouldEqual, vc.DTOData.Login)
+			convey.So(newCamera.Password, convey.ShouldEqual, vc.DTOData.Password)
+			convey.So(newCamera.Port, convey.ShouldEqual, vc.DTOData.Port)
 		})
 	})
 }
