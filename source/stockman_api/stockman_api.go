@@ -17,3 +17,5 @@ func AddVideoCamera(dto videocamera.CameraCreateDTO) *core.StockmanResponse[stri
 	stockmanResponse := core.NewStockmanResponse(d, ev.Error())
 	return stockmanResponse
 }
+
+func GetVideoCameraDTO(link string) *core.StockmanResponse[videocamera.CameraReadDTO] { return nil }

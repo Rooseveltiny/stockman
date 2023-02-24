@@ -17,9 +17,9 @@ type CameraUpdateDTO struct {
 }
 
 type CameraReadDTO struct {
-	Address  string
-	Port     string
-	Login    string
-	Password string
-	Link     string
+	Address  string `json:"address"`
+	Port     string `json:"port"`
+	Login    string `json:"login"`
+	Password string `json:"password"`
+	Link     string `json:"link"`
 }
