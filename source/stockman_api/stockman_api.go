@@ -2,29 +2,18 @@ package stockmanapi
 
 import (
 	core "stockman/source/stockman_core"
-	sandbox "stockman/source/stockman_sandbox"
+	videocamera "stockman/source/stockman_dbs/data_models/video_camera"
+	stockmanvideomanager "stockman/source/stockman_videomanager"
 )
 
-/*
-That's complete test event call.
-*/
-func TestStockmanAPI() *core.StockmanResponse[sandbox.FirstTestDTO] {
-
-	// init event object
-	ev := core.NewEvent(sandbox.FirstServiceTestFn)
-
-	// append it to main event loop
+/* Video manager API */
+func AddVideoCamera(dto videocamera.CameraCreateDTO) *core.StockmanResponse[videocamera.CameraReadDTO] {
+	ev := core.NewEvent(stockmanvideomanager.AddNewCamera)
+	ev.SetInput(dto) /* setting new camera dto */
 	core.SystemEvents_Manager.AppendEvent(ev)
-
-	// wait untill response is ready
 	<-ev.OnOutputChanged()
-
-	// init empty dto and load it
-	d := &sandbox.FirstTestDTO{}
+	d := &videocamera.CameraReadDTO{}
 	ev.LoadOutput(d)
-	stockmanResonse := core.NewStockmanResponse(*d, nil)
-
-	// return response with dto
-	return stockmanResonse
-
+	stockmanResponse := core.NewStockmanResponse(*d, nil)
+	return stockmanResponse
 }
