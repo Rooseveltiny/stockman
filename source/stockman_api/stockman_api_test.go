@@ -1,7 +1,12 @@
 package stockmanapi
 
 import (
+	"context"
+	"fmt"
 	core "stockman/source/stockman_core"
+	"stockman/source/stockman_dbs/client/postgresql"
+	videocamera "stockman/source/stockman_dbs/data_models/video_camera"
+	postgresutils "stockman/source/stockman_dbs/postgres_utils"
 	sandbox "stockman/source/stockman_sandbox"
 	"testing"
 
@@ -38,5 +43,26 @@ func TestFirstAPICall(t *testing.T) {
 	convey.Convey("test first api call", t, func() {
 		r := StockmanAPITestFunc()
 		convey.So(r.DTOData.TestFieldDTO, convey.ShouldEqual, "Hello services!")
+	})
+}
+
+func TestAddVideoCamera(t *testing.T) {
+	ctx := context.TODO()
+	c, _ := postgresql.GetPostgresClient(ctx)
+	postgresutils.PrepareTestPostgresSQL(ctx, c)
+	defer postgresutils.DropPreparedTestPostgresSQL(ctx, c)
+
+	ss := core.NewStockmanService()
+	ss.StartSystem()
+
+	convey.Convey("test add new camera", t, func() {
+		newCamera := videocamera.CameraCreateDTO{
+			Address:  "localhost://127.0.0.1",
+			Port:     "5432",
+			Login:    "Saveliy Trif",
+			Password: "manyAprilsPastManyDays32432%#$#$%^#$^@#$#(%(GK))",
+		}
+		r := AddVideoCamera(newCamera)
+		fmt.Println(r)
 	})
 }

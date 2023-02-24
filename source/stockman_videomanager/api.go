@@ -9,7 +9,11 @@ import (
 func AddNewCamera(ctx context.Context, event *core.Event) {
 	newCameraDTO := videocamera.CameraCreateDTO{}
 	event.LoadInput(&newCameraDTO)
-	CreateNewCamera(ctx, newCameraDTO)
+	l, _ := CreateNewCamera(ctx, newCameraDTO)
+
+	// event.
+	event.SetOutput(l)
+	event.NotifyOutputChanged()
 }
 
 func AllCameras() []videocamera.CameraReadDTO {

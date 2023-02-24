@@ -7,13 +7,13 @@ import (
 )
 
 /* Video manager API */
-func AddVideoCamera(dto videocamera.CameraCreateDTO) *core.StockmanResponse[videocamera.CameraReadDTO] {
+func AddVideoCamera(dto videocamera.CameraCreateDTO) *core.StockmanResponse[string] {
 	ev := core.NewEvent(stockmanvideomanager.AddNewCamera)
 	ev.SetInput(dto) /* setting new camera dto */
 	core.SystemEvents_Manager.AppendEvent(ev)
 	<-ev.OnOutputChanged()
-	d := &videocamera.CameraReadDTO{}
-	ev.LoadOutput(d)
-	stockmanResponse := core.NewStockmanResponse(*d, nil)
+	var d string
+	ev.LoadOutput(&d)
+	stockmanResponse := core.NewStockmanResponse(d, nil)
 	return stockmanResponse
 }
