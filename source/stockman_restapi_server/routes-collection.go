@@ -22,7 +22,11 @@ type RoutesCollection struct {
 	handlers []Hand
 }
 
-func (rc *RoutesCollection) LoadRouterWithRoutes(r *Router) {}
+func (rc *RoutesCollection) LoadRouterWithRoutes(r *Router) {
+	for _, h := range rc.handlers {
+		r.AddHandle(h)
+	}
+}
 
 func (rc *RoutesCollection) AppendHandle(h Hand) {
 	rc.handlers = append(rc.handlers, h)
