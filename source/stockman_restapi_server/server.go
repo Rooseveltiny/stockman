@@ -1,6 +1,7 @@
 package stockmanrestapiserver
 
 import (
+	"context"
 	"errors"
 	"net/http"
 	logger "stockman/source/stockman_logger"
@@ -16,13 +17,17 @@ func (ras *RestAPIServer) Start() {
 	if ras.router == nil {
 		logger.L.Errorln(errors.New("no router given"))
 	}
-	logger.L.Fatalln(ras.httpserver.ListenAndServe())
 	logger.L.Info("started rest app server. it is accessed by: localhost:8080")
+	logger.L.Fatalln(ras.httpserver.ListenAndServe())
 }
 
 func (ras *RestAPIServer) PutRouter(r *Router) {
 	ras.router = r
 	ras.httpserver.Handler = r.router
+}
+
+func (ras *RestAPIServer) ShoutdownServer(ctx context.Context) {
+	ras.httpserver.Shutdown(ctx)
 }
 
 func NewRestAPIServer() *RestAPIServer {
@@ -38,7 +43,7 @@ func NewRestAPIServer() *RestAPIServer {
 }
 
 /* init and start rest api server */
-func StartRestAPIServer() {
+func StartRestAPIServer(ctx context.Context) func() {
 
 	/* init server instance */
 	restApiServer := NewRestAPIServer()
@@ -51,6 +56,8 @@ func StartRestAPIServer() {
 	restApiServer.PutRouter(router)
 
 	/* start server listening */
-	restApiServer.Start()
+	go restApiServer.Start()
 
+	ShoutdownFunc := func() { restApiServer.ShoutdownServer(ctx) }
+	return ShoutdownFunc
 }

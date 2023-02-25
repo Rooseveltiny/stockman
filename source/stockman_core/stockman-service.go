@@ -12,14 +12,17 @@ type StockmanService struct {
 }
 
 func (ss *StockmanService) StartSystem() {
-
 	sysevman := NewSystemEventsManager()
 	sysevman.RunEventLoop()
 	ss.SystemEventsManager = sysevman
 	SystemEvents_Manager = sysevman
-
 }
 
 func NewStockmanService() *StockmanService {
 	return &StockmanService{}
+}
+
+func InitAndRunStockmanService() {
+	ss := NewStockmanService()
+	ss.StartSystem()
 }
