@@ -36,3 +36,21 @@ func NewRestAPIServer() *RestAPIServer {
 	}
 	return &nrest
 }
+
+/* init and start rest api server */
+func StartRestAPIServer() {
+
+	/* init server instance */
+	restApiServer := NewRestAPIServer()
+
+	/* init router for server and register all routes collections */
+	router := NewRouter()
+	router.RegisterAllRoutes()
+
+	/* give server routes */
+	restApiServer.PutRouter(router)
+
+	/* start server listening */
+	restApiServer.Start()
+
+}

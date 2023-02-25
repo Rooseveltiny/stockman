@@ -12,7 +12,7 @@ func (r *Router) AddHandle(h Hand) {
 
 func (r *Router) RegisterAllRoutes() {
 	/* init all handlers of a system here */
-	VideocameraHandlers.LoadRouterWithRoutes(r)
+	AllHandlers.LoadRouterWithRoutes(r)
 	/* add new here ... */
 }
 
@@ -23,3 +23,6 @@ func NewRouter() *Router {
 	}
 	return &router
 }
+
+/* routes collection */
+var AllHandlers *RoutesCollection = NewRoutesCollection()
