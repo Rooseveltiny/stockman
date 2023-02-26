@@ -18,7 +18,7 @@ func (ras *RestAPIServer) Start() {
 		logger.L.Errorln(errors.New("no router given"))
 	}
 	logger.L.Info("started rest app server. it is accessed by: localhost:8080")
-	logger.L.Fatalln(ras.httpserver.ListenAndServe())
+	logger.L.Infoln(ras.httpserver.ListenAndServe())
 }
 
 func (ras *RestAPIServer) PutRouter(r *Router) {
