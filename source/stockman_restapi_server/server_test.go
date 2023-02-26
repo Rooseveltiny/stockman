@@ -69,8 +69,7 @@ func TestRestAPIServer(t *testing.T) {
 
 func TestCallRestAPI(t *testing.T) {
 	ctx := context.TODO()
-	c, _ := postgresql.GetPostgresClient(ctx)
-	// convey.So(errConn, convey.ShouldBeNil)
+	c, errConn := postgresql.GetPostgresClient(ctx)
 
 	AllHandlers.AppendHandle(*TestHandler)
 
@@ -79,6 +78,7 @@ func TestCallRestAPI(t *testing.T) {
 	core.InitAndRunStockmanService()
 	postgresutils.PrepareTestPostgresSQL(ctx, c)
 	convey.Convey("test api call", t, func() {
+		convey.So(errConn, convey.ShouldBeNil)
 		resp, err := http.Get(Test_Host + Test_URL)
 		convey.So(err, convey.ShouldBeNil)
 		text_b, errRead := ioutil.ReadAll(resp.Body)

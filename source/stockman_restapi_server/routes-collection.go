@@ -4,6 +4,12 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
+/*
+struct which has description of endpoint of a system
+- method (post, put, delete, get e.c.)
+- path (url where this endpoint waits for request)
+- handle - function which run the given request
+*/
 type Hand struct {
 	Method string
 	Path   string
