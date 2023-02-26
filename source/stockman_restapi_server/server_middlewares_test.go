@@ -36,14 +36,11 @@ func testyMiddlewareChangeParam2(w http.ResponseWriter, r *http.Request, p httpr
 /* middleware test */
 var testMiddlewareChangeParam middlewares.Middleware = *middlewares.NewMiddleware(testyMiddlewareChangeParam)
 var testMiddlewareChangeBody middlewares.Middleware = *middlewares.NewMiddleware(testyMiddlewareChangeHeaders)
-
 var testMiddlewareChangeParam2 middlewares.Middleware = *middlewares.NewMiddleware(testyMiddlewareChangeParam2)
 
 /* middleware set test */
 var testMiddlewareSet middlewares.MiddlewareSet = *middlewares.NewMiddlewareSet(&testMiddlewareChangeParam, &testMiddlewareChangeBody)
-
 var testMiddlewareSet2 middlewares.MiddlewareSet = *middlewares.NewMiddlewareSet(&testMiddlewareChangeParam2)
-
 var testMiddlewareConcat middlewares.MiddlewareSet = *middlewares.ConcatMiddlewareSets(&testMiddlewareSet, &testMiddlewareSet2)
 
 /* handlers */
