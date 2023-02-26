@@ -47,3 +47,14 @@ func NewMiddlewareSet(h ...*Middleware) *MiddlewareSet {
 	}
 	return newMiddlewareSet
 }
+
+/* joins several middleware sets */
+func ConcatMiddlewareSets(ms ...*MiddlewareSet) *MiddlewareSet {
+	resultMiddlewareSet := NewMiddlewareSet()
+	for _, middleWareSet := range ms {
+		for _, middleware := range middleWareSet.middlewares {
+			resultMiddlewareSet.AppendMiddleware(middleware)
+		}
+	}
+	return resultMiddlewareSet
+}
