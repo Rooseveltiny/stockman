@@ -7,7 +7,7 @@ type Router struct {
 }
 
 func (r *Router) AddHandle(h Hand) {
-	r.router.Handle(h.Method, h.Path, h.Handle)
+	r.router.Handle(h.Method, h.Path, h.GetHandle())
 }
 
 func (r *Router) RegisterAllRoutes() {

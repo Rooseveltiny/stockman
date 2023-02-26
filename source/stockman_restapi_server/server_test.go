@@ -8,6 +8,7 @@ import (
 	"stockman/source/stockman_dbs/client/postgresql"
 	postgresutils "stockman/source/stockman_dbs/postgres_utils"
 	logger "stockman/source/stockman_logger"
+	"stockman/source/stockman_restapi_server/middlewares"
 	"testing"
 	"time"
 
@@ -24,7 +25,7 @@ func HandlerFuncForTest(w http.ResponseWriter, r *http.Request, p httprouter.Par
 	w.Write([]byte(Test_Message))
 }
 
-var TestHandler *Hand = NewHand(http.MethodGet, Test_URL, HandlerFuncForTest)
+var TestHandler *Hand = NewHand(http.MethodGet, Test_URL, HandlerFuncForTest, middlewares.DefaultMiddelwareSet)
 
 func TestRouter(t *testing.T) {
 	convey.Convey("test init router", t, func() {
@@ -40,7 +41,7 @@ func TestRoutesCollection(t *testing.T) {
 		routes := NewRoutesCollection()
 		convey.So(routes.handlers, convey.ShouldBeNil)
 		convey.Convey("test init new hand", func() {
-			newHand := NewHand(http.MethodGet, "some_route", HandlerFuncForTest)
+			newHand := NewHand(http.MethodGet, "some_route", HandlerFuncForTest, nil)
 			convey.So(newHand.Method, convey.ShouldEqual, http.MethodGet)
 			convey.So(newHand.Path, convey.ShouldEqual, "some_route")
 			convey.So(newHand.Handle, convey.ShouldEqual, HandlerFuncForTest)
