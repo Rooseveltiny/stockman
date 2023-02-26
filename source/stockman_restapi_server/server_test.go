@@ -2,7 +2,7 @@ package stockmanrestapiserver
 
 import (
 	"context"
-	"io/ioutil"
+	"io"
 	"net/http"
 	core "stockman/source/stockman_core"
 	"stockman/source/stockman_dbs/client/postgresql"
@@ -82,7 +82,7 @@ func TestCallRestAPI(t *testing.T) {
 		convey.So(errConn, convey.ShouldBeNil)
 		resp, err := http.Get(Test_Host + Test_URL)
 		convey.So(err, convey.ShouldBeNil)
-		text_b, errRead := ioutil.ReadAll(resp.Body)
+		text_b, errRead := io.ReadAll(resp.Body)
 		convey.So(errRead, convey.ShouldBeNil)
 		text := string(text_b)
 		convey.So(text, convey.ShouldEqual, Test_Message)
