@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	videocamera "stockman/source/stockman_dbs/data_models/video_camera"
@@ -27,7 +26,7 @@ func TestVideomanagerAPI(t *testing.T) {
 				Password: "@#^#$T#%$RGER",
 			}
 			body, err := json.Marshal(d)
-			fmt.Println(err)
+			convey.So(err, convey.ShouldBeNil)
 			resp, errResp := http.Post(testBaseURL+videomanagerAPIPath+"/create_camera", textPlain, bytes.NewBuffer(body))
 			convey.So(errResp, convey.ShouldBeNil)
 			defer resp.Body.Close()

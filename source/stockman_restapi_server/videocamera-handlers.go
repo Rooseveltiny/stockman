@@ -4,6 +4,7 @@ import (
 	"net/http"
 	stockmanapi "stockman/source/stockman_api"
 	videocamera "stockman/source/stockman_dbs/data_models/video_camera"
+	"stockman/source/stockman_restapi_server/middlewares"
 
 	"encoding/json"
 
@@ -34,8 +35,8 @@ func GetVideoCameraByUUID(w http.ResponseWriter, r *http.Request, p httprouter.P
 }
 
 /* handlers */
-var CreateNewVideoCameraHandler *Hand = NewHand(http.MethodPost, "/create_camera", CreateNewVideoCamera, nil)
-var GetNewVideoCameraHandler *Hand = NewHand(http.MethodGet, "/get_video_camera/:camera_link", GetVideoCameraByUUID, nil)
+var CreateNewVideoCameraHandler *Hand = NewHand(http.MethodPost, "/create_camera", CreateNewVideoCamera, middlewares.DefaultMiddelwareSet)
+var GetNewVideoCameraHandler *Hand = NewHand(http.MethodGet, "/get_video_camera/:camera_link", GetVideoCameraByUUID, middlewares.DefaultMiddelwareSet)
 
 /* collection of handlers */
 var VideoCameraHandlers_V1 *RoutesCollection = NewRoutesCollection("/api/v1/video_camera")

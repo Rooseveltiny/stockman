@@ -1,7 +1,9 @@
 package middlewares
 
 import (
+	"fmt"
 	"net/http"
+	logger "stockman/source/stockman_logger"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -31,6 +33,9 @@ func (ms *MiddlewareSet) AppendMiddleware(m *Middleware) {
 /* new function wich performs all middleware funcs and gives http.Handle at last to router */
 func (ms *MiddlewareSet) MiddlewareWrap(h httprouter.Handle) httprouter.Handle {
 	return func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+		/* log gotten request */
+		logger.L.Infoln(fmt.Sprintf("method %s", r.Method))
+
 		for _, m := range ms.middlewares {
 			/* calls all middlewares before calling main handle func */
 			m.middleware(w, r, p)
