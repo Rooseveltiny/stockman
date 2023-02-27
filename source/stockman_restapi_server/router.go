@@ -11,9 +11,11 @@ func (r *Router) AddHandle(h Hand) {
 }
 
 func (r *Router) RegisterAllRoutes() {
-	/* init all handlers of a system here */
-	AllHandlers.LoadRouterWithRoutes(r)
-	/* add new here ... */
+	/* init common handlers */
+	CommonHandlers.LoadRouterWithRoutes(r)
+
+	/* init all other handlers collections */
+	VideoCameraHandlers_V1.LoadRouterWithRoutes(r)
 }
 
 func NewRouter() *Router {
@@ -24,5 +26,5 @@ func NewRouter() *Router {
 	return &router
 }
 
-/* routes collection */
-var AllHandlers *RoutesCollection = NewRoutesCollection()
+/* routes common collection. here can be put different common handlers. i.e. test handlers */
+var CommonHandlers *RoutesCollection = NewRoutesCollection("")

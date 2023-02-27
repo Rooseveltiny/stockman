@@ -1,6 +1,7 @@
 package stockmanrestapiserver
 
 import (
+	"net/url"
 	"stockman/source/stockman_restapi_server/middlewares"
 
 	"github.com/julienschmidt/httprouter"
@@ -42,6 +43,7 @@ func NewHand(method, path string, handle httprouter.Handle, m *middlewares.Middl
 
 type RoutesCollection struct {
 	handlers []Hand
+	basePath string /* path which will be joined at the begin */
 }
 
 func (rc *RoutesCollection) LoadRouterWithRoutes(r *Router) {
@@ -50,7 +52,12 @@ func (rc *RoutesCollection) LoadRouterWithRoutes(r *Router) {
 	}
 }
 
+func (rc *RoutesCollection) joinPathWithBasePath(h *Hand) {
+	h.Path, _ = url.JoinPath(rc.basePath, h.Path)
+}
+
 func (rc *RoutesCollection) AppendHandle(h Hand) {
+	rc.joinPathWithBasePath(&h)
 	rc.handlers = append(rc.handlers, h)
 }
 
@@ -58,6 +65,6 @@ func (rc *RoutesCollection) Handlers() []Hand {
 	return rc.handlers
 }
 
-func NewRoutesCollection() *RoutesCollection {
-	return &RoutesCollection{}
+func NewRoutesCollection(basePath string) *RoutesCollection {
+	return &RoutesCollection{basePath: basePath}
 }

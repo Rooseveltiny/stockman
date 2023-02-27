@@ -50,8 +50,8 @@ var testyHand2 *Hand = NewHand(http.MethodGet, "/test_middleware_concat/:user", 
 func TestMiddlewareRun(t *testing.T) {
 	/* prepare server */
 	ctx := context.Background()
-	AllHandlers.AppendHandle(*testyHand)
-	AllHandlers.AppendHandle(*testyHand2)
+	CommonHandlers.AppendHandle(*testyHand)
+	CommonHandlers.AppendHandle(*testyHand2)
 	closeServer := StartRestAPIServer(ctx)
 	defer closeServer()
 	Convey("test change param middleware", t, func() {
