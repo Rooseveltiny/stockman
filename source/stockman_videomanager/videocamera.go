@@ -34,7 +34,7 @@ func GetVideoCamera(ctx context.Context, link string) (*VideoCamera, error) {
 	repo := vcpostgres.NewRepository(ctx, logger.L)
 	vcDTO, err := repo.GetByLink(ctx, link)
 	if err != nil {
-		return nil, nil
+		return nil, err
 	}
 	var vc VideoCamera
 	errMap := dto.Map(&vc, vcDTO)

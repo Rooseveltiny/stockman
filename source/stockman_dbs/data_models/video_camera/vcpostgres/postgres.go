@@ -39,7 +39,7 @@ func (r *repository) Create(ctx context.Context, vc videocamera.CameraCreateDTO)
 		r.logger.Errorln(err)
 		return "", err
 	}
-	return link, nil
+	return link, err
 }
 
 func (r *repository) GetAll(ctx context.Context) ([]*videocamera.CameraReadDTO, error) {
@@ -51,7 +51,7 @@ func (r *repository) GetAll(ctx context.Context) ([]*videocamera.CameraReadDTO, 
 	if err != nil {
 		logger.L.Errorln(err)
 	}
-	return ccds, nil
+	return ccds, err
 }
 
 func (r *repository) GetByLink(ctx context.Context, link string) (*videocamera.CameraReadDTO, error) {
@@ -64,5 +64,5 @@ func (r *repository) GetByLink(ctx context.Context, link string) (*videocamera.C
 	if err != nil {
 		logger.L.Errorln(err)
 	}
-	return &ccd, nil
+	return &ccd, err
 }

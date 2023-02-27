@@ -17,6 +17,7 @@ func RetrieveCamera(ctx context.Context, event *core.Event) {
 	if err != nil {
 		event.SetError(&CantFindCamera)
 		event.NotifyOutputChanged()
+		return
 	}
 	dto.Map(&vcreadDTO, videocamera)
 	event.SetOutput(vcreadDTO)

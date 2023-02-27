@@ -9,6 +9,7 @@ import (
 	sandbox "stockman/source/stockman_sandbox"
 	"testing"
 
+	"github.com/google/uuid"
 	"github.com/smartystreets/goconvey/convey"
 )
 
@@ -69,6 +70,10 @@ func TestAddVideoCamera(t *testing.T) {
 			convey.So(newCamera.Login, convey.ShouldEqual, vc.DTOData.Login)
 			convey.So(newCamera.Password, convey.ShouldEqual, vc.DTOData.Password)
 			convey.So(newCamera.Port, convey.ShouldEqual, vc.DTOData.Port)
+		})
+		convey.Convey("check not found error", func() {
+			cameraIsntExists := GetVideoCameraDTO(uuid.New().String())
+			convey.So(cameraIsntExists.Err.Error(), convey.ShouldEqual, "camera isn't found")
 		})
 	})
 }
