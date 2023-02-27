@@ -57,7 +57,7 @@ func TestRoutesCollection(t *testing.T) {
 		routesOther := NewRoutesCollection("some_base_url")
 		newHandOther := NewHand(http.MethodGet, "some_route", HandlerFuncForTest, nil)
 		routesOther.AppendHandle(*newHandOther)
-		convey.So(routesOther.handlers[0].Path, convey.ShouldEqual, "some_base_url/some_route")
+		convey.So(routesOther.handlers[0].Path, convey.ShouldEqual, "/some_base_url/some_route")
 	})
 }
 

@@ -53,7 +53,13 @@ func (rc *RoutesCollection) LoadRouterWithRoutes(r *Router) {
 }
 
 func (rc *RoutesCollection) joinPathWithBasePath(h *Hand) {
-	h.Path, _ = url.JoinPath(rc.basePath, h.Path)
+	if rc.basePath != "" {
+		urlToAdd := rc.basePath
+		if urlToAdd[:1] != "/" {
+			urlToAdd = "/" + urlToAdd
+		}
+		h.Path, _ = url.JoinPath(urlToAdd, h.Path)
+	}
 }
 
 func (rc *RoutesCollection) AppendHandle(h Hand) {
