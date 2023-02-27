@@ -31,7 +31,6 @@ func AddNewCamera(ctx context.Context, event *core.Event) {
 		logger.L.Errorln(err)
 		event.SetError(err)
 	}
-	// event.
 	event.SetOutput(l)
 	event.NotifyOutputChanged()
 }
