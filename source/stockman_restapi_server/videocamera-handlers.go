@@ -19,6 +19,4 @@ func init() {
 	/* register all handlers */
 	VideoCameraHandlers_V1.AppendHandle(*CreateNewVideoCameraHandler)
 	VideoCameraHandlers_V1.AppendHandle(*GetNewVideoCameraHandler)
-	// AllHandlers.AppendHandle(*CreateNewVideoCameraHandler)
-	// AllHandlers.AppendHandle(*GetNewVideoCameraHandler)
 }
