@@ -15,7 +15,7 @@ func RetrieveCamera(ctx context.Context, event *core.Event) {
 	event.LoadInput(&cameraLink)
 	videocamera, err := GetVideoCamera(ctx, cameraLink)
 	if err != nil {
-		event.SetError(err)
+		event.SetError(&CantFindCamera)
 		event.NotifyOutputChanged()
 	}
 	dto.Map(&vcreadDTO, videocamera)
@@ -29,7 +29,7 @@ func AddNewCamera(ctx context.Context, event *core.Event) {
 	l, err := CreateNewCamera(ctx, newCameraDTO)
 	if err != nil {
 		logger.L.Errorln(err)
-		event.SetError(err)
+		event.SetError(&CantCreateCamera)
 	}
 	event.SetOutput(l)
 	event.NotifyOutputChanged()
