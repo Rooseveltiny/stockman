@@ -9,7 +9,8 @@ import (
 )
 
 const testBaseURL string = "http://localhost:8080"
-const applicationsJSON string = "application/json"
+
+// const applicationsJSON string = "application/json"
 const textPlain string = "text/plain"
 
 func runStockmanService() {

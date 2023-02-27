@@ -109,3 +109,13 @@ func TestEventsManager(t *testing.T) {
 		})
 	})
 }
+
+/* test SystemError */
+var sysError *SystemError = NewSystemError("some error text")
+
+func TestSystemError(t *testing.T) {
+	Convey("test system error", t, func() {
+		So(sysError.Error(), ShouldEqual, "some error text")
+		So(sysError.AppendErrorText("some extra text").Error(), ShouldEqual, "some error text\nsome extra text")
+	})
+}
