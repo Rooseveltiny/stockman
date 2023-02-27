@@ -7,9 +7,11 @@ import (
 )
 
 /* Video manager API */
+
+/* it is rather flexible to make requests to system. otherwise it can be generic used
 func AddVideoCamera(dto videocamera.CameraCreateDTO) *core.StockmanResponse[string] {
 	ev := core.NewEvent(stockmanvideomanager.AddNewCamera)
-	ev.SetInput(dto) /* setting new camera dto */
+	ev.SetInput(dto)
 	core.SystemEvents_Manager.AppendEvent(ev)
 	<-ev.OnOutputChanged()
 	var d string
@@ -17,14 +19,14 @@ func AddVideoCamera(dto videocamera.CameraCreateDTO) *core.StockmanResponse[stri
 	stockmanResponse := core.NewStockmanResponse(d, ev.Error())
 	return stockmanResponse
 }
+*/
 
+/* adding new camera into system with some params */
+func AddVideoCamera(dto videocamera.CameraCreateDTO) *core.StockmanResponse[string] {
+	return core.ApiRequestShortcutEasyResponse[videocamera.CameraCreateDTO, string](stockmanvideomanager.AddNewCamera, dto)
+}
+
+/* getting camera from system by link :uuid */
 func GetVideoCameraDTO(link string) *core.StockmanResponse[videocamera.CameraReadDTO] {
-	ev := core.NewEvent(stockmanvideomanager.RetrieveCamera)
-	ev.SetInput(link)
-	core.SystemEvents_Manager.AppendEvent(ev)
-	<-ev.OnOutputChanged()
-	var data videocamera.CameraReadDTO
-	ev.LoadOutput(&data)
-	r := core.NewStockmanResponse(data, ev.Error())
-	return r
+	return core.ApiRequestShortcutEasyResponse[string, videocamera.CameraReadDTO](stockmanvideomanager.RetrieveCamera, link)
 }
